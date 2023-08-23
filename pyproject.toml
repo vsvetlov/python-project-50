@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hexlet-code"
-version = "0.2.0"
+version = "0.3.0"
 description = "Compares two configuration files and shows a difference."
 authors = ["Your Name <you@example.com>"]
 readme = "README.md"
@@ -9,7 +9,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 
 
 [build-system]
