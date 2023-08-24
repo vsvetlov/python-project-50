@@ -1,2 +1,1 @@
-from .gendifflib import *
-
+from .gendifflib import generate_diff
