@@ -16,20 +16,44 @@ def parse_files(file_path1, file_path2):
     return data1, data2
 
 
+def get_diff(data1, data2):
+    keys = sorted(set(data1) | set(data2))
+    diff = []
+    print(keys)
+    for k in keys:
+        print(k)
+        if k in data1 and k in data2:
+            if type(data1[k]) == dict and type(data2[k]) == dict:
+                diff.append([' ', k, get_diff(data1[k], data2[k])])
+            elif data1[k] == data2[k]:
+                diff.append([' ', k, data1[k]])
+            else:
+                diff.append(['-', k, data1[k]])
+                diff.append(['+', k, data2[k]])
+        elif k in data1:
+            diff.append(['-', k, data1[k]])
+        else:
+            diff.append(['+', k, data2[k]])
+    return diff
+
+
+def format_output(diff):
+    output = ['{']
+    for i in diff:
+        print(i)
+        if type(i[2]) is list:
+            output.append(f'  {i[0]} {i[1]}: {format_output(i[2])}')
+        else:
+            output.append(f'  {i[0]} {i[1]}: {i[2]}')
+    # output = ['{'] + [f'  {i[0]} {i[1]}: {i[2]}' for i in diff] + ['}']
+    output.append('}')
+    return '\n'.join(output)
+
+
 def generate_diff(file_path1, file_path2):
     data1, data2 = parse_files(file_path1, file_path2)
-    keys = sorted(set(data1) | set(data2))
-    diff = ['{']
-    for k in keys:
-        if k in data1 and k in data2:
-            if data1[k] == data2[k]:
-                diff.append(f'   {k}: {data1[k]}')
-            else:
-                diff.append(f' - {k}: {data1[k]}')
-                diff.append(f' + {k}: {data2[k]}')
-        elif k in data1:
-            diff.append(f' - {k}: {data1[k]}')
-        else:
-            diff.append(f' + {k}: {data2[k]}')
-    diff.append('}')
-    return '\n'.join(diff)
+    diff = get_diff(data1, data2)
+    print(diff)
+    output = format_output(diff)
+    print(f'#####\n{output}\n###########\n###########')
+    return output
