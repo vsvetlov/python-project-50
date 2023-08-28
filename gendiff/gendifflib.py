@@ -21,55 +21,45 @@ def get_diff(data1, data2):
     diff = []
     print(keys)
     for k in keys:
-        print(k)
+        # print(k)
         if k in data1 and k in data2:
             if type(data1[k]) is dict and type(data2[k]) is dict:
-                diff.append([' ', k, get_diff(data1[k], data2[k])])
+                nested_diff = get_diff(data1[k], data2[k])
+                diff.append({'diff': ' ', 'key': k, 'children': nested_diff})
             elif data1[k] == data2[k]:
-                diff.append([' ', k, data1[k]])
+                diff.append({'diff': ' ', 'key': k, 'value': data1[k]})
             else:
-                diff.append(['-', k, data1[k]])
-                diff.append(['+', k, data2[k]])
+                diff.append({'diff': '-', 'key': k, 'value': data1[k]})
+                diff.append({'diff': '+', 'key': k, 'value': data2[k]})
         elif k in data1:
-            # if type(data1[k]) is dict:
-            #     diff.append(['-', k, get_diff(data1[k], data1[k])])
-            # else:
-            diff.append(['-', k, data1[k]])
+            diff.append({'diff': '-', 'key': k, 'value': data1[k]})
         else:
-            # if type(data2[k]) is dict:
-            #     diff.append(['+', k, get_diff(data2[k], data2[k])])
-            # else:
-            diff.append(['+', k, data2[k]])
+            diff.append({'diff': '+', 'key': k, 'value': data2[k]})
     return diff
 
 
-def dict_to_list(data):
-    result = []
-    for k, v in data.items():
-        result.append([' ', k, v])
-    return result
-
-
-def format_stylish(diff, lvl=0):
+def stylish(diff, lvl=0):
     prefix = f'{" " * 4 * lvl}'
     output = ['{']
     for i in diff:
-        print(i)
-        if type(i[2]) is dict:
-            i[2] = dict_to_list(i[2])
-        if type(i[2]) is list:
-            parent = format_stylish(i[2], lvl + 1)
-            output.append(f'{prefix} {i[0]} {i[1]}: {parent}')
+        # print(i)
+        if 'value' in i and type(i['value']) is dict:
+            # print(f'!!!!!!!!!!!!{i}')
+            i['children'] = get_diff(i['value'], i['value'])
+            # print(f'*************{i}')
+        if 'children' in i:
+            parent = stylish(i['children'], lvl + 1)
+            output.append(f'{prefix}  {i["diff"]} {i["key"]}: {parent}')
         else:
-            output.append(f'{prefix} {i[0]} {i[1]}: {i[2]}')
+            output.append(f'{prefix}  {i["diff"]} {i["key"]}: {i["value"]}')
     # output = ['{'] + [f'  {i[0]} {i[1]}: {i[2]}' for i in diff] + ['}']
     output.append(f'{prefix}}}')
     return '\n'.join(output)
 
 
-def generate_diff(file_path1, file_path2):
+def generate_diff(file_path1, file_path2, format=stylish):
     data1, data2 = parse_files(file_path1, file_path2)
     diff = get_diff(data1, data2)
-    print(diff)
-    output = format_stylish(diff)
+    # print(f'################\n{diff}\n###############')
+    output = format(diff)
     return output
