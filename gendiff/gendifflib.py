@@ -1,5 +1,6 @@
 import json
 import yaml
+from gendiff.diffformat.stylish import format_stylish, format_plain
 
 
 def parse_files(file_path1, file_path2):
@@ -21,7 +22,6 @@ def get_diff(data1, data2):
     diff = []
     print(keys)
     for k in keys:
-        # print(k)
         if k in data1 and k in data2:
             if type(data1[k]) is dict and type(data2[k]) is dict:
                 nested_diff = get_diff(data1[k], data2[k])
@@ -29,8 +29,7 @@ def get_diff(data1, data2):
             elif data1[k] == data2[k]:
                 diff.append({'diff': ' ', 'key': k, 'value': data1[k]})
             else:
-                diff.append({'diff': '-', 'key': k, 'value': data1[k]})
-                diff.append({'diff': '+', 'key': k, 'value': data2[k]})
+                diff.append({'diff': 'u', 'key': k, 'old': data1[k], 'new': data2[k]})
         elif k in data1:
             diff.append({'diff': '-', 'key': k, 'value': data1[k]})
         else:
@@ -38,28 +37,13 @@ def get_diff(data1, data2):
     return diff
 
 
-def stylish(diff, lvl=0):
-    prefix = f'{" " * 4 * lvl}'
-    output = ['{']
-    for i in diff:
-        # print(i)
-        if 'value' in i and type(i['value']) is dict:
-            # print(f'!!!!!!!!!!!!{i}')
-            i['children'] = get_diff(i['value'], i['value'])
-            # print(f'*************{i}')
-        if 'children' in i:
-            parent = stylish(i['children'], lvl + 1)
-            output.append(f'{prefix}  {i["diff"]} {i["key"]}: {parent}')
-        else:
-            output.append(f'{prefix}  {i["diff"]} {i["key"]}: {i["value"]}')
-    # output = ['{'] + [f'  {i[0]} {i[1]}: {i[2]}' for i in diff] + ['}']
-    output.append(f'{prefix}}}')
-    return '\n'.join(output)
-
-
-def generate_diff(file_path1, file_path2, format=stylish):
+def generate_diff(file_path1, file_path2, format='stylish'):
     data1, data2 = parse_files(file_path1, file_path2)
     diff = get_diff(data1, data2)
-    # print(f'################\n{diff}\n###############')
-    output = format(diff)
+    print(f'diff = {diff}')
+    formats = {
+        'stylish': format_stylish,
+        'plain': format_plain
+    }
+    output = formats[format](diff)
     return output

@@ -1,48 +1,48 @@
 from gendiff import generate_diff
 
 diff12 = '''{
-  - follow: False
+  - follow: false
     host: hexlet.io
   - proxy: [123, 234, 53, 22]
   - timeout: {
         tag: 50
     }
   + timeout: 20
-  + verbose: True
+  + verbose: true
 }'''
 
 diff21 = '''{
-  + follow: False
+  + follow: false
     host: hexlet.io
   + proxy: [123, 234, 53, 22]
   - timeout: 20
   + timeout: {
         tag: 50
     }
-  - verbose: True
+  - verbose: true
 }'''
 
 diff12y = '''{
-  - follow: False
+  - follow: false
     host: hexlet.io
   - proxy: 123.234.53.22
   - timeout: 50
   + timeout: 20
-  + verbose: True
+  + verbose: true
 }'''
 
 diff21y = '''{
-  + follow: False
+  + follow: false
     host: hexlet.io
   + proxy: 123.234.53.22
   - timeout: 20
   + timeout: 50
-  - verbose: True
+  - verbose: true
 }'''
 
 ndiff12 = '''{
     common: {
-      + follow: False
+      + follow: false
         setting1: Value 1
       - setting2: 200
       - setting3: true
@@ -53,7 +53,7 @@ ndiff12 = '''{
         }
         setting6: {
             doge: {
-              - wow:
+              - wow: 
               + wow: so much
             }
             key: value
@@ -85,6 +85,18 @@ ndiff12 = '''{
     }
 }'''
 
+ndiff12p = '''Property 'common.follow' was added with value: false
+Property 'common.setting2' was removed
+Property 'common.setting3' was updated. From true to null
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: [complex value]
+Property 'common.setting6.doge.wow' was updated. From '' to 'so much'
+Property 'common.setting6.ops' was added with value: 'vops'
+Property 'group1.baz' was updated. From 'bas' to 'bars'
+Property 'group1.nest' was updated. From [complex value] to 'str'
+Property 'group2' was removed
+Property 'group3' was added with value: [complex value]'''
+
 path = 'tests/fixtures/'
 
 
@@ -104,5 +116,9 @@ def test_generate_diff21_yml():
     assert generate_diff(f'{path}file2.yml', f'{path}file1.yml') == diff21y
 
 
-# def test_generate_ndiff12():
-    # assert generate_diff(f'{path}file1.json', f'{path}file2.json') == diff12
+def test_generate_ndiff12():
+    assert generate_diff(f'{path}nfile1.json', f'{path}nfile2.json') == ndiff12
+
+
+def test_generate_ndiff12p():
+    assert generate_diff(f'{path}nfile1.json', f'{path}nfile2.json', format='plain') == ndiff12p
