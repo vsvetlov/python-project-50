@@ -1,15 +1,15 @@
 import gendiff.gendifflib
 
 
-def format_value(value, q=True):
+def format_value(value, quotes=True):
     if isinstance(value, bool):
         return str(value).lower()
     elif value is None:
         return 'null'
-    elif q:
+    elif quotes and isinstance(value, str):
         return f"'{value}'"
     else:
-        return f"{value}"
+        return value
 
 
 def format_stylish(diff, lvl=0, brackets=True):
