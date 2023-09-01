@@ -1,6 +1,12 @@
 import json
 import yaml
-from gendiff.diffformat.stylish import format_stylish, format_plain
+from gendiff.formatdiff import format_plain, format_stylish, format_json
+
+FORMATS = {
+    'stylish': format_stylish,
+    'plain': format_plain,
+    'json': format_json
+}
 
 
 def parse_files(file_path1, file_path2):
@@ -20,7 +26,7 @@ def parse_files(file_path1, file_path2):
 def get_diff(data1, data2):
     keys = sorted(set(data1) | set(data2))
     diff = []
-    print(keys)
+    # print(keys)
     for k in keys:
         if k in data1 and k in data2:
             if type(data1[k]) is dict and type(data2[k]) is dict:
@@ -29,7 +35,8 @@ def get_diff(data1, data2):
             elif data1[k] == data2[k]:
                 diff.append({'diff': ' ', 'key': k, 'value': data1[k]})
             else:
-                diff.append({'diff': 'u', 'key': k, 'old': data1[k], 'new': data2[k]})
+                diff.append(
+                    {'diff': 'u', 'key': k, 'old': data1[k], 'new': data2[k]})
         elif k in data1:
             diff.append({'diff': '-', 'key': k, 'value': data1[k]})
         else:
@@ -40,10 +47,6 @@ def get_diff(data1, data2):
 def generate_diff(file_path1, file_path2, format='stylish'):
     data1, data2 = parse_files(file_path1, file_path2)
     diff = get_diff(data1, data2)
-    print(f'diff = {diff}')
-    formats = {
-        'stylish': format_stylish,
-        'plain': format_plain
-    }
-    output = formats[format](diff)
+    # print(f'diff = {diff}')
+    output = FORMATS[format](diff)
     return output

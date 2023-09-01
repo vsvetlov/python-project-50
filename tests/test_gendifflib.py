@@ -1,3 +1,4 @@
+import json
 from gendiff import generate_diff
 
 diff12 = '''{
@@ -97,6 +98,7 @@ Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]'''
 
+
 path = 'tests/fixtures/'
 
 
@@ -121,4 +123,12 @@ def test_generate_ndiff12():
 
 
 def test_generate_ndiff12p():
-    assert generate_diff(f'{path}nfile1.json', f'{path}nfile2.json', format='plain') == ndiff12p
+    assert generate_diff(
+        f'{path}nfile1.json', f'{path}nfile2.json', format='plain') == ndiff12p
+
+
+def test_generate_ndiff12j():
+    with open(f'{path}/dataset.json') as f1:
+        dataset = f1.readlines()
+    assert generate_diff(
+        f'{path}nfile1.json', f'{path}nfile2.json', format='json') == dataset[0]
