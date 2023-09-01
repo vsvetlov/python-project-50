@@ -13,5 +13,5 @@ Installation using pip and this repository
 ```bash
 python3 -m pip install --user git+https://github.com/vsvetlov/python-project-50.git
 ```
-### Examples
-[![asciicast](https://asciinema.org/a/395697.png)](https://asciinema.org/a/605866)
+### Brain-games asciinema
+[![asciicast](https://asciinema.org/a/605866.png)](https://asciinema.org/a/605866)
