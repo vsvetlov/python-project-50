@@ -12,9 +12,9 @@ def format_value(value, q=True):
         return f"{value}"
 
 
-def format_stylish(diff, lvl=0):
-    prefix = f'{" " * 4 * lvl}'
-    output = ['{']
+def format_stylish(diff, lvl=0, brackets=True):
+    prefix = 4*lvl + 1
+    output = []
     for i in diff:
         if i['diff'] == 'u':
             updated_entry = [
@@ -22,17 +22,19 @@ def format_stylish(diff, lvl=0):
                 {'diff': '+', 'key': i['key'], 'value': i['new']}
             ]
             output.append(
-                f'{format_stylish(updated_entry, lvl)[2: -2].rstrip()}')
+                f'{format_stylish(updated_entry, lvl, False)}')
         else:
             if 'value' in i and type(i['value']) is dict:
                 i['children'] = gendiff.gendifflib.get_diff(
                     i['value'], i['value'])
             if 'children' in i:
                 children = format_stylish(i['children'], lvl + 1)
-                output.append(f'{prefix}  {i["diff"]} {i["key"]}: {children}')
+                output.append(f'{i["diff"]:>{prefix+2}} {i["key"]}: {children}')
             else:
                 output.append(
-                    f'{prefix}  {i["diff"]} {i["key"]}: '
+                    f'{i["diff"]:>{prefix+2}} {i["key"]}: '
                     f'{format_value(i["value"], False)}')
-    output.append(f'{prefix}}}')
+    if brackets:
+        output.insert(0, '{')
+        output.append(f"{'}':>{prefix}}")
     return '\n'.join(output)
