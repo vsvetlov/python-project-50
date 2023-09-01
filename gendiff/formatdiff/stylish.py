@@ -13,7 +13,7 @@ def format_value(value, quotes=True):
 
 
 def format_stylish(diff, lvl=0, brackets=True):
-    prefix = 4*lvl + 1
+    prefix = 4 * lvl + 1
     output = []
     for i in diff:
         if i['diff'] == 'u':
