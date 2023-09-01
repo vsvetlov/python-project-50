@@ -54,7 +54,7 @@ ndiff12 = '''{
         }
         setting6: {
             doge: {
-              - wow: # noqa: W291
+              - wow: 
               + wow: so much
             }
             key: value
@@ -85,7 +85,7 @@ ndiff12 = '''{
         }
         fee: 100500
     }
-}'''
+}'''  # noqa: W291
 
 ndiff12p = '''Property 'common.follow' was added with value: false
 Property 'common.setting2' was updated. From 200 to '23'
