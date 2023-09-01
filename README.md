@@ -5,8 +5,8 @@
 
 ### Quickstart
 The package contains a tool to compare two files.
-The possible formats for the input files are JSON or YAML
-You can choose how result is formatted: stylish (default), plain or json 
+The possible formats for the input files are JSON or YAML.
+You can choose how result is formatted: stylish (default), plain or json. 
 
 
 Installation using pip and this repository

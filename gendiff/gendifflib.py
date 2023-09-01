@@ -27,8 +27,8 @@ def get_diff(data1, data2):
     for k in keys:
         if k in data1 and k in data2:
             if type(data1[k]) is dict and type(data2[k]) is dict:
-                nested_diff = get_diff(data1[k], data2[k])
-                diff.append({'diff': ' ', 'key': k, 'children': nested_diff})
+                children = get_diff(data1[k], data2[k])
+                diff.append({'diff': ' ', 'key': k, 'children': children})
             elif data1[k] == data2[k]:
                 diff.append({'diff': ' ', 'key': k, 'value': data1[k]})
             else:

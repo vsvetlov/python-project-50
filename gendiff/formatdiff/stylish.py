@@ -28,8 +28,8 @@ def format_stylish(diff, lvl=0):
                 i['children'] = gendiff.gendifflib.get_diff(
                     i['value'], i['value'])
             if 'children' in i:
-                parent = format_stylish(i['children'], lvl + 1)
-                output.append(f'{prefix}  {i["diff"]} {i["key"]}: {parent}')
+                children = format_stylish(i['children'], lvl + 1)
+                output.append(f'{prefix}  {i["diff"]} {i["key"]}: {children}')
             else:
                 output.append(
                     f'{prefix}  {i["diff"]} {i["key"]}: '
