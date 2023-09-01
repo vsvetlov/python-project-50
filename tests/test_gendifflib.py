@@ -1,4 +1,3 @@
-import json
 from gendiff import generate_diff
 
 diff12 = '''{
@@ -120,6 +119,10 @@ def test_generate_diff21_yml():
 
 def test_generate_ndiff12():
     assert generate_diff(f'{path}nfile1.json', f'{path}nfile2.json') == ndiff12
+
+
+def test_generate_ndiff12yj():
+    assert generate_diff(f'{path}nfile1.json', f'{path}nfile2.yml') == ndiff12
 
 
 def test_generate_ndiff12p():

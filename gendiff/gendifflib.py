@@ -2,6 +2,7 @@ import json
 import yaml
 from gendiff.formatdiff import format_plain, format_stylish, format_json
 
+
 FORMATS = {
     'stylish': format_stylish,
     'plain': format_plain,
@@ -9,24 +10,20 @@ FORMATS = {
 }
 
 
-def parse_files(file_path1, file_path2):
-    with (
-        open(file_path1) as f1,
-        open(file_path2) as f2
-    ):
-        if file_path1.endswith('json'):
-            data1 = json.load(f1)
-            data2 = json.load(f2)
-        else:
-            data1 = yaml.safe_load(f1)
-            data2 = yaml.safe_load(f2)
-    return data1, data2
+def parse_files(files):
+    content = []
+    for file in files:
+        with open(file) as f:
+            if file.endswith('json'):
+                content.append(json.load(f))
+            else:
+                content.append(yaml.safe_load(f))
+    return content
 
 
 def get_diff(data1, data2):
     keys = sorted(set(data1) | set(data2))
     diff = []
-    # print(keys)
     for k in keys:
         if k in data1 and k in data2:
             if type(data1[k]) is dict and type(data2[k]) is dict:
@@ -45,8 +42,7 @@ def get_diff(data1, data2):
 
 
 def generate_diff(file_path1, file_path2, format='stylish'):
-    data1, data2 = parse_files(file_path1, file_path2)
+    data1, data2 = parse_files([file_path1, file_path2])
     diff = get_diff(data1, data2)
-    # print(f'diff = {diff}')
     output = FORMATS[format](diff)
     return output
