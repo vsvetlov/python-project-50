@@ -1,44 +1,5 @@
 from gendiff import generate_diff
 
-diff12 = '''{
-  - follow: false
-    host: hexlet.io
-  - proxy: [123, 234, 53, 22]
-  - timeout: {
-        tag: 50
-    }
-  + timeout: 20
-  + verbose: true
-}'''
-
-diff21 = '''{
-  + follow: false
-    host: hexlet.io
-  + proxy: [123, 234, 53, 22]
-  - timeout: 20
-  + timeout: {
-        tag: 50
-    }
-  - verbose: true
-}'''
-
-diff12y = '''{
-  - follow: false
-    host: hexlet.io
-  - proxy: 123.234.53.22
-  - timeout: 50
-  + timeout: 20
-  + verbose: true
-}'''
-
-diff21y = '''{
-  + follow: false
-    host: hexlet.io
-  + proxy: 123.234.53.22
-  - timeout: 20
-  + timeout: 50
-  - verbose: true
-}'''
 
 ndiff12 = '''{
     common: {
@@ -104,24 +65,12 @@ Property 'group3' was added with value: [complex value]'''
 path = 'tests/fixtures/'
 
 
-def test_generate_diff12():
-    assert generate_diff(f'{path}file1.json', f'{path}file2.json') == diff12
-
-
-def test_generate_diff21():
-    assert generate_diff(f'{path}file2.json', f'{path}file1.json') == diff21
-
-
-def test_generate_diff12_yml():
-    assert generate_diff(f'{path}file1.yml', f'{path}file2.yml') == diff12y
-
-
-def test_generate_diff21_yml():
-    assert generate_diff(f'{path}file2.yml', f'{path}file1.yml') == diff21y
-
-
 def test_generate_ndiff12():
     assert generate_diff(f'{path}nfile1.json', f'{path}nfile2.json') == ndiff12
+
+
+def test_generate_ndiff12y():
+    assert generate_diff(f'{path}nfile1.yaml', f'{path}nfile2.yml') == ndiff12
 
 
 def test_generate_ndiff12yj():
