@@ -19,7 +19,7 @@ def test_generate_ndiff12yj():
 
 def test_generate_ndiff12p():
     assert generate_diff(
-        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json', 
+        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json',
         format='plain') == ndiff12p
 
 
@@ -27,5 +27,5 @@ def test_generate_ndiff12j():
     with open('tests/fixtures//dataset.json') as f1:
         dataset = f1.readlines()
     assert generate_diff(
-        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json', 
+        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json',
         format='json') == dataset[0]

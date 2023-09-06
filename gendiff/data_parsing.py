@@ -1,26 +1,3 @@
-import json
-import yaml
-from gendiff.formatdiff import format_plain, format_stylish, format_json
-
-
-FORMATS = {
-    'stylish': format_stylish,
-    'plain': format_plain,
-    'json': format_json
-}
-
-
-def parse_files(files):
-    content = []
-    for file in files:
-        with open(file) as f:
-            if file.endswith('json'):
-                content.append(json.load(f))
-            else:
-                content.append(yaml.safe_load(f))
-    return content
-
-
 def get_diff(data1, data2):
     keys = sorted(set(data1) | set(data2))
     diff = []
@@ -39,10 +16,3 @@ def get_diff(data1, data2):
         else:
             diff.append({'diff': '+', 'key': k, 'value': data2[k]})
     return diff
-
-
-def generate_diff(file_path1, file_path2, format='stylish'):
-    data1, data2 = parse_files([file_path1, file_path2])
-    diff = get_diff(data1, data2)
-    output = FORMATS[format](diff)
-    return output

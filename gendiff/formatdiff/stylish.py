@@ -1,4 +1,4 @@
-import gendiff.gendifflib
+from gendiff.data_parsing import get_diff
 
 
 def format_value(value, quotes=True):
@@ -25,8 +25,7 @@ def format_stylish(diff, lvl=0, brackets=True):
                 f'{format_stylish(updated_entry, lvl, False)}')
         else:
             if 'value' in i and type(i['value']) is dict:
-                i['children'] = gendiff.gendifflib.get_diff(
-                    i['value'], i['value'])
+                i['children'] = get_diff(i['value'], i['value'])
             if 'children' in i:
                 children = format_stylish(i['children'], lvl + 1)
                 output.append(f'{i["diff"]:>{prefix+2}} {i["key"]}: {children}')
