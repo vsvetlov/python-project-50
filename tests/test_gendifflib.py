@@ -1,31 +1,31 @@
 from gendiff import generate_diff
-from tests.fixtures.datasets import ndiff12, ndiff12p
+from tests.fixtures.results import stylish_result, plain_result
 
 
-def test_generate_ndiff12():
-    assert generate_diff(
-        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json') == ndiff12
+def test_stylish_jj():
+    assert generate_diff('tests/fixtures/nfile1.json',
+                         'tests/fixtures/nfile2.json') == stylish_result
 
 
-def test_generate_ndiff12y():
-    assert generate_diff(
-        'tests/fixtures/nfile1.yaml', 'tests/fixtures/nfile2.yml') == ndiff12
+def test_stylish_yy():
+    assert generate_diff('tests/fixtures/nfile1.yaml',
+                         'tests/fixtures/nfile2.yml') == stylish_result
 
 
-def test_generate_ndiff12yj():
-    assert generate_diff(
-        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.yml') == ndiff12
+def test_stylish_jy():
+    assert generate_diff('tests/fixtures/nfile1.json',
+                         'tests/fixtures/nfile2.yml') == stylish_result
 
 
-def test_generate_ndiff12p():
+def test_plain_jj():
+    assert generate_diff('tests/fixtures/nfile1.json',
+                         'tests/fixtures/nfile2.json',
+                         format='plain') == plain_result
+
+
+def test_json_jj():
+    with open('tests/fixtures//result.json') as f1:
+        result = f1.readlines()
     assert generate_diff(
         'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json',
-        format='plain') == ndiff12p
-
-
-def test_generate_ndiff12j():
-    with open('tests/fixtures//dataset.json') as f1:
-        dataset = f1.readlines()
-    assert generate_diff(
-        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json',
-        format='json') == dataset[0]
+        format='json') == result[0]
