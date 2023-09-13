@@ -1,31 +1,33 @@
+import os
+from pytest import mark
 from gendiff import generate_diff
 from tests.fixtures.results import stylish_result, plain_result
 
 
-def test_stylish_jj():
-    assert generate_diff('tests/fixtures/nfile1.json',
-                         'tests/fixtures/nfile2.json') == stylish_result
+filesets = [
+    ('nfile1.json', 'nfile2.json'),
+    ('nfile1.yaml', 'nfile2.yml'),
+    ('nfile1.json', 'nfile2.yml')
+]
 
 
-def test_stylish_yy():
-    assert generate_diff('tests/fixtures/nfile1.yaml',
-                         'tests/fixtures/nfile2.yml') == stylish_result
+abs_sets = [
+    tuple(os.path.join(os.path.dirname(__file__), 'fixtures', f)
+          for f in fileset) for fileset in filesets]
 
 
-def test_stylish_jy():
-    assert generate_diff('tests/fixtures/nfile1.json',
-                         'tests/fixtures/nfile2.yml') == stylish_result
+@mark.parametrize('file1, file2', list(abs_sets))
+def test_stylish_(file1, file2):
+    assert generate_diff(file1, file2) == stylish_result
 
 
-def test_plain_jj():
-    assert generate_diff('tests/fixtures/nfile1.json',
-                         'tests/fixtures/nfile2.json',
-                         format='plain') == plain_result
+@mark.parametrize('file1, file2', list(abs_sets))
+def test_plain(file1, file2):
+    assert generate_diff(file1, file2, format='plain') == plain_result
 
 
-def test_json_jj():
+@mark.parametrize('file1, file2', list(abs_sets))
+def test_json(file1, file2):
     with open('tests/fixtures//result.json') as f1:
         result = f1.readlines()
-    assert generate_diff(
-        'tests/fixtures/nfile1.json', 'tests/fixtures/nfile2.json',
-        format='json') == result[0]
+    assert generate_diff(file1, file2, format='json') == result[0]
