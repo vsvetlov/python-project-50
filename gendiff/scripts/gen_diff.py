@@ -1,4 +1,4 @@
-from gendiff.scipts.cli import parse_args
+from gendiff.cli import parse_args
 from gendiff import generate_diff
 
 
