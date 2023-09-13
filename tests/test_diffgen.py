@@ -28,6 +28,8 @@ def test_plain(file1, file2):
 
 @mark.parametrize('file1, file2', list(abs_sets))
 def test_json(file1, file2):
-    with open('tests/fixtures//result.json') as f1:
-        result = f1.readlines()
-    assert generate_diff(file1, file2, format='json') == result[0]
+    json_file = os.path.join(
+        os.path.dirname(__file__), 'fixtures', 'result.json')
+    with open(json_file) as f1:
+        json_result = f1.readlines()[0]
+    assert generate_diff(file1, file2, format='json') == json_result
