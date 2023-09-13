@@ -1,5 +1,12 @@
 from gendiff.data_parsing import get_diff
 
+DIFF_MAP = {
+    'complex': ' ',
+    'unchanged': ' ',
+    'added': '+',
+    'removed': '-'
+}
+
 
 def format_value(value, quotes=True):
     if isinstance(value, bool):
@@ -16,10 +23,10 @@ def format_stylish(diff, lvl=0, brackets=True):
     prefix = 4 * lvl + 1
     output = []
     for i in diff:
-        if i['diff'] == 'u':
+        if i['diff'] == 'updated':
             updated_entry = [
-                {'diff': '-', 'key': i['key'], 'value': i['old']},
-                {'diff': '+', 'key': i['key'], 'value': i['new']}
+                {'diff': 'removed', 'key': i['key'], 'value': i['old']},
+                {'diff': 'added', 'key': i['key'], 'value': i['new']}
             ]
             output.append(
                 f'{format_stylish(updated_entry, lvl, False)}')
@@ -28,10 +35,12 @@ def format_stylish(diff, lvl=0, brackets=True):
                 i['children'] = get_diff(i['value'], i['value'])
             if 'children' in i:
                 children = format_stylish(i['children'], lvl + 1)
-                output.append(f'{i["diff"]:>{prefix+2}} {i["key"]}: {children}')
+                output.append(
+                    f'{DIFF_MAP[i["diff"]]:>{prefix+2}} '
+                    f'{i["key"]}: {children}')
             else:
                 output.append(
-                    f'{i["diff"]:>{prefix+2}} {i["key"]}: '
+                    f'{DIFF_MAP[i["diff"]]:>{prefix+2}} {i["key"]}: '
                     f'{format_value(i["value"], False)}')
     if brackets:
         output.insert(0, '{')

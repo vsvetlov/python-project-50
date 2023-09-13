@@ -14,14 +14,14 @@ def format_plain(diff, path=''):
         property = '.'.join([path, i['key']]) if path else i['key']
         if 'children' in i:
             output.append(format_plain(i['children'], property))
-        elif i['diff'] == '+':
+        elif i['diff'] == 'added':
             output.append(
                 f"Property '{property}' was added with value: "
                 f"{format_complex(i['value'])}")
-        elif i['diff'] == '-':
+        elif i['diff'] == 'removed':
             output.append(
                 f"Property '{property}' was removed")
-        elif i['diff'] == 'u':
+        elif i['diff'] == 'updated':
             output.append(
                 f"Property '{property}' was updated. "
                 f"From {format_complex(i['old'])} to "

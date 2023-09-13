@@ -16,17 +16,17 @@ abs_sets = [
           for f in fileset) for fileset in filesets]
 
 
-@mark.parametrize('file1, file2', list(abs_sets))
+@mark.parametrize('file1, file2', abs_sets)
 def test_stylish_(file1, file2):
     assert generate_diff(file1, file2) == stylish_result
 
 
-@mark.parametrize('file1, file2', list(abs_sets))
+@mark.parametrize('file1, file2', abs_sets)
 def test_plain(file1, file2):
     assert generate_diff(file1, file2, format='plain') == plain_result
 
 
-@mark.parametrize('file1, file2', list(abs_sets))
+@mark.parametrize('file1, file2', abs_sets)
 def test_json(file1, file2):
     json_file = os.path.join(
         os.path.dirname(__file__), 'fixtures', 'result.json')
