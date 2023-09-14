@@ -12,7 +12,7 @@ def format_plain(diff, path=''):
     output = []
     for i in diff:
         property = '.'.join([path, i['key']]) if path else i['key']
-        if 'children' in i:
+        if i['diff'] == 'nested':
             output.append(format_plain(i['children'], property))
         elif i['diff'] == 'added':
             output.append(

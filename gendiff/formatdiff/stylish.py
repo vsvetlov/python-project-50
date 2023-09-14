@@ -1,7 +1,7 @@
 from gendiff.data_parsing import get_diff
 
 DIFF_MAP = {
-    'complex': ' ',
+    'nested': ' ',
     'unchanged': ' ',
     'added': '+',
     'removed': '-'

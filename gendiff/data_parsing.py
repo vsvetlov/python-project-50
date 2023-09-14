@@ -5,7 +5,7 @@ def get_diff(data1, data2):
         if k in data1 and k in data2:
             if type(data1[k]) is dict and type(data2[k]) is dict:
                 children = get_diff(data1[k], data2[k])
-                diff.append({'diff': 'complex', 'key': k, 'children': children})
+                diff.append({'diff': 'nested', 'key': k, 'children': children})
             elif data1[k] == data2[k]:
                 diff.append({'diff': 'unchanged', 'key': k, 'value': data1[k]})
             else:
