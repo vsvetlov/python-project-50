@@ -10,20 +10,20 @@ def format_complex(value):
 
 def format_plain(diff, path=''):
     output = []
-    for i in diff:
-        property = '.'.join([path, i['key']]) if path else i['key']
-        if i['diff'] == 'nested':
-            output.append(format_plain(i['children'], property))
-        elif i['diff'] == 'added':
+    for node in diff:
+        property = '.'.join([path, node['key']]) if path else node['key']
+        if node['diff'] == 'nested':
+            output.append(format_plain(node['children'], property))
+        elif node['diff'] == 'added':
             output.append(
                 f"Property '{property}' was added with value: "
-                f"{format_complex(i['value'])}")
-        elif i['diff'] == 'removed':
+                f"{format_complex(node['value'])}")
+        elif node['diff'] == 'removed':
             output.append(
                 f"Property '{property}' was removed")
-        elif i['diff'] == 'updated':
+        elif node['diff'] == 'updated':
             output.append(
                 f"Property '{property}' was updated. "
-                f"From {format_complex(i['old'])} to "
-                f"{format_complex(i['new'])}")
+                f"From {format_complex(node['old'])} to "
+                f"{format_complex(node['new'])}")
     return '\n'.join(output)
