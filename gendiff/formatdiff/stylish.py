@@ -4,7 +4,8 @@ DIFF_MAP = {
     'nested': ' ',
     'unchanged': ' ',
     'added': '+',
-    'removed': '-'
+    'removed': '-',
+    'updated': ' '
 }
 
 
@@ -19,30 +20,34 @@ def format_value(value, quotes=True):
         return value
 
 
-def format_stylish(diff, lvl=0, brackets=True):
+def format_complex(value, lvl):
+    if isinstance(value, dict):
+        children = get_diff(value, value)
+        stylish_children = format_stylish(children, lvl+1)
+        return stylish_children
+    else:
+        return format_value(value, False)
+
+
+def format_stylish(diff, lvl=0):
     prefix = 4 * lvl + 1
-    output = []
+    output = ['{']
     for node in diff:
-        if node['diff'] == 'updated':
-            updated_entry = [
-                {'diff': 'removed', 'key': node['key'], 'value': node['old']},
-                {'diff': 'added', 'key': node['key'], 'value': node['new']}
-            ]
+        if node['diff'] == 'nested':
+            stylish_children = format_stylish(node['children'], lvl+1)
             output.append(
-                f'{format_stylish(updated_entry, lvl, False)}')
-        else:
-            if 'value' in node and type(node['value']) is dict:
-                node['children'] = get_diff(node['value'], node['value'])
-            if 'children' in node:
-                children = format_stylish(node['children'], lvl + 1)
-                output.append(
-                    f'{DIFF_MAP[node["diff"]]:>{prefix+2}} '
-                    f'{node["key"]}: {children}')
-            else:
-                output.append(
-                    f'{DIFF_MAP[node["diff"]]:>{prefix+2}} {node["key"]}: '
-                    f'{format_value(node["value"], False)}')
-    if brackets:
-        output.insert(0, '{')
-        output.append(f"{'}':>{prefix}}")
+                f'{DIFF_MAP[node["diff"]]:>{prefix+2}} '
+                f'{node["key"]}: {stylish_children}')
+        elif node['diff'] in ['added', 'removed', 'unchanged']:
+            output.append(
+                f'{DIFF_MAP[node["diff"]]:>{prefix+2}} {node["key"]}: '
+                f'{format_complex(node["value"], lvl)}')
+        elif node['diff'] == 'updated':
+            output.append(
+                f'{DIFF_MAP["removed"]:>{prefix+2}} {node["key"]}: '
+                f'{format_complex(node["old"], lvl)}')
+            output.append(
+                f'{DIFF_MAP["added"]:>{prefix+2}} {node["key"]}: '
+                f'{format_complex(node["new"], lvl)}')
+    output.append(f"{'}':>{prefix}}")
     return '\n'.join(output)
