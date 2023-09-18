@@ -1,12 +1,20 @@
 from gendiff.data_parsing import get_diff
 
-DIFF_MAP = {
+STYLES = {
     'nested': ' ',
     'unchanged': ' ',
     'added': '+',
     'removed': '-',
-    'updated': ' '
+    'updated': ' ',
+    '}': '}'
 }
+
+
+def get_prefix(style, lvl):
+    indent = 4 * lvl + 1
+    if style == '}':
+        return f'{STYLES[style]:>{indent}}'
+    return f'{STYLES[style]:>{indent+2}}'
 
 
 def format_value(value, quotes=True):
@@ -30,24 +38,23 @@ def format_complex(value, lvl):
 
 
 def format_stylish(diff, lvl=0):
-    prefix = 4 * lvl + 1
     output = ['{']
     for node in diff:
         if node['diff'] == 'nested':
             stylish_children = format_stylish(node['children'], lvl + 1)
             output.append(
-                f'{DIFF_MAP[node["diff"]]:>{prefix+2}} '
-                f'{node["key"]}: {stylish_children}')
+                f'{get_prefix(node["diff"], lvl)} {node["key"]}: '
+                f'{stylish_children}')
         elif node['diff'] in ['added', 'removed', 'unchanged']:
             output.append(
-                f'{DIFF_MAP[node["diff"]]:>{prefix+2}} {node["key"]}: '
+                f'{get_prefix(node["diff"], lvl)} {node["key"]}: '
                 f'{format_complex(node["value"], lvl)}')
         elif node['diff'] == 'updated':
             output.append(
-                f'{DIFF_MAP["removed"]:>{prefix+2}} {node["key"]}: '
+                f'{get_prefix("removed", lvl)} {node["key"]}: '
                 f'{format_complex(node["old"], lvl)}')
             output.append(
-                f'{DIFF_MAP["added"]:>{prefix+2}} {node["key"]}: '
+                f'{get_prefix("added", lvl)} {node["key"]}: '
                 f'{format_complex(node["new"], lvl)}')
-    output.append(f"{'}':>{prefix}}")
+    output.append(f'{get_prefix("}", lvl)}')
     return '\n'.join(output)
