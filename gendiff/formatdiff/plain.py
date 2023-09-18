@@ -8,12 +8,12 @@ def format_complex(value):
         return format_value(value)
 
 
-def format_plain(diff, path=''):
+def format_plain(diff, path=''):  # noqa: C901
     output = []
     for node in diff:
-        property = '.'.join([path, node['key']]) if path else node['key']
+        property = path + node['key']
         if node['diff'] == 'nested':
-            output.append(format_plain(node['children'], property))
+            output.append(format_plain(node['children'], path=f'{property}.'))
         elif node['diff'] == 'added':
             output.append(
                 f"Property '{property}' was added with value: "
@@ -24,6 +24,8 @@ def format_plain(diff, path=''):
         elif node['diff'] == 'updated':
             output.append(
                 f"Property '{property}' was updated. "
-                f"From {format_complex(node['old'])} to "
-                f"{format_complex(node['new'])}")
+                f"From {format_complex(node['old'])} "
+                f"to {format_complex(node['new'])}")
+        elif node['diff'] != 'unchanged':
+            raise Exception('Unknown node type')
     return '\n'.join(output)

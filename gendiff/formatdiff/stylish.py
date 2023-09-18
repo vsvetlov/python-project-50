@@ -1,6 +1,6 @@
 from gendiff.data_parsing import get_diff
 
-STYLES = {
+SIGNS = {
     'nested': ' ',
     'unchanged': ' ',
     'added': '+',
@@ -10,11 +10,11 @@ STYLES = {
 }
 
 
-def get_prefix(style, lvl):
+def get_prefix(diff, lvl):
     indent = 4 * lvl + 1
-    if style == '}':
-        return f'{STYLES[style]:>{indent}}'
-    return f'{STYLES[style]:>{indent+2}}'
+    if diff == '}':
+        return f'{SIGNS[diff]:>{indent}}'
+    return f'{SIGNS[diff]:>{indent+2}}'
 
 
 def format_value(value, quotes=True):
@@ -56,5 +56,7 @@ def format_stylish(diff, lvl=0):
             output.append(
                 f'{get_prefix("added", lvl)} {node["key"]}: '
                 f'{format_complex(node["new"], lvl)}')
+        else:
+            raise Exception('Unknown node type')
     output.append(f'{get_prefix("}", lvl)}')
     return '\n'.join(output)
