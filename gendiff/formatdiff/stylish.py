@@ -23,7 +23,7 @@ def format_value(value, quotes=True):
 def format_complex(value, lvl):
     if isinstance(value, dict):
         children = get_diff(value, value)
-        stylish_children = format_stylish(children, lvl+1)
+        stylish_children = format_stylish(children, lvl + 1)
         return stylish_children
     else:
         return format_value(value, False)
@@ -34,7 +34,7 @@ def format_stylish(diff, lvl=0):
     output = ['{']
     for node in diff:
         if node['diff'] == 'nested':
-            stylish_children = format_stylish(node['children'], lvl+1)
+            stylish_children = format_stylish(node['children'], lvl + 1)
             output.append(
                 f'{DIFF_MAP[node["diff"]]:>{prefix+2}} '
                 f'{node["key"]}: {stylish_children}')
